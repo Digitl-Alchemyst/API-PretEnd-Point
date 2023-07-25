@@ -72,20 +72,31 @@ app.post('/api/users', (req, res) => {
   fs.readFile(userDataFilePath, 'utf8', (readErr, data) => {
     if (readErr) {
       console.error('Error reading user data from file:', readErr);
-      return res.status(500).json({ message: 'Error reading user data from file' });
+      return res
+        .status(500)
+        .json({ message: 'Error reading user data from file' });
     }
 
     const existingData = data.trim(); // Remove leading/trailing whitespace
     const formattedNewUserEntry = formatUserEntry(newUser);
-    const updatedData = `${existingData.slice(0, -2)},\n${formattedNewUserEntry}\n  \n];`;
+    const updatedData = `${existingData.slice(
+      0,
+      -2,
+    )},\n${formattedNewUserEntry}\n  \n];`;
 
     // Write updated user data back to the file
     fs.writeFile(userDataFilePath, updatedData, (writeErr) => {
       if (writeErr) {
         console.error('Error writing user data to file:', writeErr);
-        return res.status(500).json({ message: 'Error writing user data to file' });
+        return res
+          .status(500)
+          .json({ message: 'Error writing user data to file' });
       } else {
-        console.log('New User added to the API Endpoint:', newUser.id, newUser.fullname);
+        console.log(
+          'New User added to the API Endpoint:',
+          newUser.id,
+          newUser.fullname,
+        );
         res.json(users);
       }
     });
@@ -99,23 +110,26 @@ app.delete('/api/users/:id', (req, res) => {
   if (userIndex === -1) {
     return res.status(404).json({ message: 'User not found' });
   }
-  users.splice(userIndex, 1);
+  const deletedUser = users[userIndex]; // Save the deleted user for logging purposes
+  users.splice(userIndex, 1); // Remove the user from the array
+
+  // Generate the updated data string without modifying the type definitions
+  const formattedUserEntries = users.map(formatUserEntry);
+  const updatedData = `export const singleUser: UserInfo[] = [\n${formattedUserEntries.join(',\n')}\n];`;
 
   // Write updated user data back to the file
-  fs.writeFile(
-    userDataFilePath,
-    `export type UserInfo = ${JSON.stringify(users, null, 2)};`,
-    (err) => {
-      if (err) {
-        console.error('Error writing user data to file:', err);
-      } else {
-        console.log('User deleted from the API Endpoint:', id);
-      }
-    },
-  );
-
-  res.json('User deleted!');
+  fs.writeFile(userDataFilePath, updatedData, (err) => {
+    if (err) {
+      console.error('Error writing user data to file:', err);
+      res.status(500).json({ message: 'Error writing user data to file' });
+    } else {
+      console.log('User deleted from the API Endpoint:', id, deletedUser.info.fullname);
+      res.json('User deleted!');
+    }
+  });
 });
+
+
 
 // ****  PRODUCTS ****
 
@@ -145,8 +159,6 @@ app.delete('/api/products/:id', (req, res) => {
   );
   res.json('Product deleted!');
 });
-
-
 
 // Init Server
 app.listen(PORT, () => {

@@ -114,8 +114,12 @@ app.delete('/api/users/:id', (req, res) => {
   users.splice(userIndex, 1); // Remove the user from the array
 
   // Generate the updated data string without modifying the type definitions
-  const formattedUserEntries = users.map(formatUserEntry);
-  const updatedData = `export const singleUser: UserInfo[] = [\n${formattedUserEntries.join(',\n')}\n];`;
+  const formattedUserEntries = users.map(
+    (user) => `  ${formatUserEntry(user)},`,
+  );
+  const updatedData = `export const singleUser: UserInfo[] = [\n${formattedUserEntries.join(
+    '\n',
+  )}\n];`;
 
   // Write updated user data back to the file
   fs.writeFile(userDataFilePath, updatedData, (err) => {
@@ -123,13 +127,15 @@ app.delete('/api/users/:id', (req, res) => {
       console.error('Error writing user data to file:', err);
       res.status(500).json({ message: 'Error writing user data to file' });
     } else {
-      console.log('User deleted from the API Endpoint:', id, deletedUser.info.fullname);
+      console.log(
+        'User deleted from the API Endpoint:',
+        id,
+        deletedUser.info.fullname,
+      );
       res.json('User deleted!');
     }
   });
 });
-
-
 
 // ****  PRODUCTS ****
 

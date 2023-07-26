@@ -110,52 +110,22 @@ app.delete('/api/users/:id', (req, res) => {
   if (userIndex === -1) {
     return res.status(404).json({ message: 'User not found' });
   }
-  const deletedUser = users[userIndex]; // Save the deleted user for logging purposes
-  users.splice(userIndex, 1); // Remove the user from the array
+  users.splice(userIndex, 1);
 
-  // Read the existing data from the file to preserve TypeScript type definitions
-  fs.readFile(userDataFilePath, 'utf8', (readErr, data) => {
-    if (readErr) {
-      console.error('Error reading user data from file:', readErr);
-      return res
-        .status(500)
-        .json({ message: 'Error reading user data from file' });
-    }
-
-    // Extract the TypeScript type definitions
-    const typeDefinitionsRegex = /export type UserInfo = \{[^]*?\};/;
-    const typeDefinitionsMatch = data.match(typeDefinitionsRegex);
-
-    if (!typeDefinitionsMatch) {
-      console.error('Type definitions not found in the data file.');
-      return res
-        .status(500)
-        .json({ message: 'Type definitions not found in the data file.' });
-    }
-
-    const typeDefinitions = typeDefinitionsMatch[0];
-    const formattedUserEntries = users.map(
-      (user) => `  ${formatUserEntry(user)},`,
-    );
-    const updatedData = `${typeDefinitions}\n\nexport const singleUser: UserInfo[] = [\n${formattedUserEntries.join(
-      '\n',
-    )}\n];`;
-
-    // Write updated user data back to the file
-    fs.writeFile(userDataFilePath, updatedData, (writeErr) => {
-      if (writeErr) {
-        console.error('Error writing user data to file:', writeErr);
-        res.status(500).json({ message: 'Error writing user data to file' });
+  // Write updated user data back to the file
+  fs.writeFile(
+    userDataFilePath,
+    `export type UserInfo = ${JSON.stringify(users, null, 2)};`,
+    (err) => {
+      if (err) {
+        console.error('Error writing user data to file:', err);
       } else {
-        console.log(
-          'User deleted from the API Endpoint:',
-          id,
-          deletedUser.info.fullname,
-        );
-        res.json('User deleted!');
+        console.log('User deleted from the API Endpoint:', id);
       }
-    });
-  });
+    },
+  );
+
+  res.json('User deleted!');
 });
 
 // ****  PRODUCTS ****

@@ -333,4 +333,111 @@ export const singleUser: UserInfo[] = [
   ]
 }
   
+,
+{
+  id: 4,
+  title: "NSA Evasion Champion",
+  firstName: "Edward",
+  lastName: "Snowden",
+  emailAddress: "Fuck@NSA.gov",
+  phoneNumber: "(420) 232-2356",
+  img: "https://images-na.ssl-images-amazon.com/images/I/91daxCrnYXL.jpg",
+  salesTotal: "$420.69",
+  verified: true,
+  info: {
+    username: "Ed Snowden",
+    fullname: "Edward Snowden",
+    email: "Fuck@NSA.gov",
+    phone: "(420) 232-2356",
+    salesTotal: "$420.69",
+    status: "verified"
+  },
+  chart: {
+    dataKeys: [
+      {
+        name: "sales",
+        color: "#82ca9d"
+      },
+      {
+        name: "revenue",
+        color: "#8884d8"
+      },
+      {
+        name: "comission",
+        color: "#2a8ded"
+      }
+    ],
+    data: [
+      {
+        name: "Sun",
+        sales: 42,
+        revenue: 3492,
+        comission: 279.36
+      },
+      {
+        name: "Mon",
+        sales: 30,
+        revenue: 2566,
+        comission: 205.28
+      },
+      {
+        name: "Tue",
+        sales: 25,
+        revenue: 1867,
+        comission: 149.36
+      },
+      {
+        name: "Wed",
+        sales: 33,
+        revenue: 4243,
+        comission: 339.44
+      },
+      {
+        name: "Thu",
+        sales: 22,
+        revenue: 1654,
+        comission: 132.32
+      },
+      {
+        name: "Fri",
+        sales: 48,
+        revenue: 5387,
+        comission: 430.96
+      },
+      {
+        name: "Sat",
+        sales: 19,
+        revenue: 1902,
+        comission: 152.16
+      }
+    ]
+  },
+  activities: [
+    {
+      text: "[user] sold [quantity] x [item] for [value]",
+      time: "3 day ago"
+    },
+    {
+      text: "[user] sold [quantity] x [item] for [value]",
+      time: "1 week ago"
+    },
+    {
+      text: "[user] sold [quantity] x [item] for [value]",
+      time: "2 weeks ago"
+    },
+    {
+      text: "[user] sold [quantity] x [item] for [value]",
+      time: "1 month ago"
+    },
+    {
+      text: "[user] sold [quantity] x [item] for [value]",
+      time: "1 month ago"
+    },
+    {
+      text: "[user] sold [quantity] x [item] for [value]",
+      time: "2 months ago"
+    }
+  ]
+}
+  
 ];

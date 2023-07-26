@@ -225,6 +225,7 @@ export const singleUser: UserInfo[] = [
       },
     ], // Assumption: No activities data is provided, so it is an empty array
   }  
+  
 ,
 {
   id: 3,

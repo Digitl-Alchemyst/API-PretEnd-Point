@@ -117,7 +117,9 @@ app.delete('/api/users/:id', (req, res) => {
   fs.readFile(userDataFilePath, 'utf8', (readErr, data) => {
     if (readErr) {
       console.error('Error reading user data from file:', readErr);
-      return res.status(500).json({ message: 'Error reading user data from file' });
+      return res
+        .status(500)
+        .json({ message: 'Error reading user data from file' });
     }
 
     // Extract the TypeScript type definitions
@@ -126,11 +128,15 @@ app.delete('/api/users/:id', (req, res) => {
 
     if (!typeDefinitionsMatch) {
       console.error('Type definitions not found in the data file.');
-      return res.status(500).json({ message: 'Type definitions not found in the data file.' });
+      return res
+        .status(500)
+        .json({ message: 'Type definitions not found in the data file.' });
     }
 
     const typeDefinitions = typeDefinitionsMatch[0];
-    const formattedUserEntries = users.map((user) => `  ${formatUserEntry(user)},`);
+    const formattedUserEntries = users.map(
+      (user) => `  ${formatUserEntry(user)},`,
+    );
     const updatedData = `${typeDefinitions}\n\nexport const singleUser: UserInfo[] = [\n${formattedUserEntries.join(
       '\n',
     )}\n];`;
@@ -141,13 +147,16 @@ app.delete('/api/users/:id', (req, res) => {
         console.error('Error writing user data to file:', writeErr);
         res.status(500).json({ message: 'Error writing user data to file' });
       } else {
-        console.log('User deleted from the API Endpoint:', id, deletedUser.info.fullname);
+        console.log(
+          'User deleted from the API Endpoint:',
+          id,
+          deletedUser.info.fullname,
+        );
         res.json('User deleted!');
       }
     });
   });
 });
-
 
 // ****  PRODUCTS ****
 

@@ -241,8 +241,7 @@ export const singleUser: UserInfo[] = [
       time: "2 months ago"
     }
   ]
-}
-,
+},
 {
   id: 3,
   title: "NSA Evasion Champion",
@@ -348,5 +347,4 @@ export const singleUser: UserInfo[] = [
     }
   ]
 }
-  
 ];

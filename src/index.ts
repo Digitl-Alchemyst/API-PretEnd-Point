@@ -24,6 +24,11 @@ app.use(helmet()); // Sets HTTP response headers
 app.use(cors()); // Enable Cors
 app.use(express.json()); // Parse incoming request with JSON payloads
 
+// Configure API for Vercel
+app.get('/', (req, res) => {
+  res.send('Express on Vercel');
+});
+
 // Load Mock Data
 const userDataFilePath = path.join(__dirname, '../mockData/singleUserData.ts');
 let products = [...singleProduct];
@@ -185,3 +190,5 @@ app.delete('/api/products/:id', (req, res) => {
 app.listen(PORT, () => {
   console.log(`API Pret-End Point is listening on port ${PORT}`);
 });
+
+module.exports = app;

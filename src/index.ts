@@ -24,6 +24,11 @@ app.use(helmet()); // Sets HTTP response headers
 app.use(cors()); // Enable Cors
 app.use(express.json()); // Parse incoming request with JSON payloads
 
+// Configure API for Vercel
+app.get('/', (req, res) => {
+  res.send('Express on Vercel');
+});
+
 // Load Mock Data
 const userDataFilePath = path.join(__dirname, '../mockData/singleUserData.ts');
 let products = [...singleProduct];
@@ -105,58 +110,52 @@ app.post('/api/users', (req, res) => {
 
 // DELETE USER
 app.delete('/api/users/:id', (req, res) => {
-  const id = parseInt(req.params.id);
-  const userIndex = users.findIndex((user) => user.id === id);
-  if (userIndex === -1) {
+  const userIdToDelete = parseInt(req.params.id);
+  const filteredUsers = users.filter((user) => user.id !== userIdToDelete);
+
+  if (users.length === filteredUsers.length) {
+    // No user with the given ID found
     return res.status(404).json({ message: 'User not found' });
   }
-  const deletedUser = users[userIndex]; // Save the deleted user for logging purposes
-  users.splice(userIndex, 1); // Remove the user from the array
 
-  // Read the existing data from the file to preserve TypeScript type definitions
+  users = filteredUsers; // Update in-memory data
+
+  // Read the existing data from the file
   fs.readFile(userDataFilePath, 'utf8', (readErr, data) => {
     if (readErr) {
       console.error('Error reading user data from file:', readErr);
-      return res
-        .status(500)
-        .json({ message: 'Error reading user data from file' });
+      return res.status(500).json({ message: 'Error reading user data from file' });
     }
 
-    // Extract the TypeScript type definitions
-    const typeDefinitionsRegex = /export type UserInfo = \{[^]*?\};/;
-    const typeDefinitionsMatch = data.match(typeDefinitionsRegex);
+    const existingData = data.trim(); // Remove leading/trailing whitespace
 
-    if (!typeDefinitionsMatch) {
-      console.error('Type definitions not found in the data file.');
-      return res
-        .status(500)
-        .json({ message: 'Type definitions not found in the data file.' });
-    }
+    // Find the index where the "singleUser" array starts and ends in the data file
+    const startIndex = existingData.indexOf('export const singleUser: UserInfo[] = [');
+    const endIndex = existingData.lastIndexOf('];') + 2;
 
-    const typeDefinitions = typeDefinitionsMatch[0];
-    const formattedUserEntries = users.map(
-      (user) => `  ${formatUserEntry(user)},`,
-    );
-    const updatedData = `${typeDefinitions}\n\nexport const singleUser: UserInfo[] = [\n${formattedUserEntries.join(
-      '\n',
-    )}\n];`;
+    // Extract the part of the data file before and after the "singleUser" array
+    const beforeSingleUser = existingData.slice(0, startIndex);
+    const afterSingleUser = existingData.slice(endIndex);
 
-    // Write updated user data back to the file
-    fs.writeFile(userDataFilePath, updatedData, (writeErr) => {
+    // Create the updated data content with the modified "singleUser" array
+    const formattedUsersData =
+      beforeSingleUser +
+      `export const singleUser: UserInfo[] = [\n${users.map(formatUserEntry).join(',\n')}\n];` +
+      afterSingleUser;
+
+    // Write the updated data back to the file
+    fs.writeFile(userDataFilePath, formattedUsersData, (writeErr) => {
       if (writeErr) {
         console.error('Error writing user data to file:', writeErr);
-        res.status(500).json({ message: 'Error writing user data to file' });
+        return res.status(500).json({ message: 'Error writing user data to file' });
       } else {
-        console.log(
-          'User deleted from the API Endpoint:',
-          id,
-          deletedUser.info.fullname,
-        );
-        res.json('User deleted!');
+        console.log('User deleted:', userIdToDelete);
+        res.json(users);
       }
     });
   });
 });
+
 
 // ****  PRODUCTS ****
 
@@ -191,3 +190,5 @@ app.delete('/api/products/:id', (req, res) => {
 app.listen(PORT, () => {
   console.log(`API Pret-End Point is listening on port ${PORT}`);
 });
+
+module.exports = app;

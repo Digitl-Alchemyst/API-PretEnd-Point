@@ -1,5 +1,5 @@
-import app from '../app';
 import express from 'express';
+
 import MessageResponse from '../interfaces/MessageResponse';
 import emojis from './emojis';
 
@@ -13,4 +13,4 @@ router.get<{}, MessageResponse>('/', (req, res) => {
 
 router.use('/emojis', emojis);
 
-export default app;
+export default router;

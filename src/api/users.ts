@@ -1,4 +1,4 @@
-import { singleUser, UserInfo } from '../../mockData/singleUserData';
+import { singleUser, UserInfo } from '../mockData/singleUserData';
 import * as path from 'path';
 import * as fs from 'fs';
 import express from 'express';
@@ -6,7 +6,6 @@ import express from 'express';
 // Setup Express Router
 const app = express();
 const router = express.Router();
-
 
 // Load the Mock Data File
 const userDataFilePath = path.join(__dirname, '../mockData/singleUserData.ts');

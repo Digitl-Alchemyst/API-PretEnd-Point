@@ -1,4 +1,4 @@
-import { singleProduct } from '../../mockData/singleProductData';
+import { singleProduct } from '../mockData/singleProductData';
 // import * as path from 'path';
 // import * as fs from 'fs';
 import express from 'express';

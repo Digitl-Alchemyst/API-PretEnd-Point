@@ -5,7 +5,13 @@
   "main": "index.js",
   "scripts": {
     "dev": "ts-node-dev --respawn --pretty --transpile-only src/index.ts",
-    "test": "test"
+    "start": "ts-node src/index.ts",
+    "test": "test",
+    "lint": "eslint --fix src test",
+    "typecheck": "tsc --noEmit",
+    "build": "tsc",
+    "deploy": "vercel --prod",
+    "vercel-build": "echo hello"
   },
   "author": "Digitl Alchemyst",
   "license": "MIT",
